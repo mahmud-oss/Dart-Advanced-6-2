@@ -1,23 +1,21 @@
-import 'dart:io';
-import 'package:sqljocky5/constants.dart';
 import 'package:sqljocky5/sqljocky.dart';
-import 'package:sqljocky5/utils.dart';
-
-main(List<String> arguments) async {
-
-  var pool = new ConnectionPool(
-    host: 'localhost',
-    port: 3306,
-    user: 'bryan',
-    password: 'password',
-    db: 'school',
-    max: 5
+import 'dart:convert';
+//import 'package:sqljocky5/utils.dart';
+import 'package:sqljocky5/constants.dart';
+import 'dart:io';
+void main(List<String> arguments) async{
+  var pool= new ConnectionSettings(
+      user: "bryan",
+      password: "password",
+      host: "localhost",
+      port: 3306,
+      db: "school"
   );
-
-  var results = await pool.query('Select * from teachers');
-
-  print('Results ${await results.length} rows');
-
-  pool.closeConnectionsNow();
-  exit(0);
+  var conn=await MySqlConnection.connect(pool);
+  var results = await conn.execute('select * from teacher');
+  //print('${await results.length}');
+  results.forEach((Row row) {
+    print(row[0].toString()+' : '+row[1].toString()+' -> '+row[2].toString());
+  });
+  conn.close();
 }
